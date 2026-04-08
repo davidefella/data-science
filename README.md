@@ -1,4 +1,4 @@
-# data-science
+# Data Science
 
 Esercizi e script di live coding ricavati dal percorso **Master Data Analytics (MDA) Fundamentals** @ Roma Tre
 
