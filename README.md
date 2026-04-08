@@ -7,9 +7,3 @@ Il master copre 26 corsi in 320 ore su statistica, machine learning, Python, SQL
 ## Prerequisiti
 
 Il repo assume familiarità con Python (sintassi base, basi OOP, strutture dati)
-
-## Licenza
-
-Questo materiale è distribuito sotto licenza [Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)](https://creativecommons.org/licenses/by-nc/4.0/).
-
-Puoi condividere e adattare il materiale liberamente, a condizione di citare l'autore e di non farne uso commerciale.
