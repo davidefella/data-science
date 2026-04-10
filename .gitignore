@@ -205,3 +205,10 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+00-datasets/workoutExport.csv
+00-datasets/wallet.csv
+00-datasets/investments.csv
+00-datasets/health.csv
+
+.DS_Store
