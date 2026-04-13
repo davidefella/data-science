@@ -285,8 +285,12 @@ lat_mask = exercise_names == "Lat Pulldown"
 # weights[lat_mask] keeps only the weights where lat_mask is True.
 lat_pulldown_weights = weights[lat_mask]
 print(f"\nLat Pulldown: {lat_mask.sum()} sets")
-print(f"Min weight: {lat_pulldown_weights.min()} kg  |  max: {lat_pulldown_weights.max()} kg")
-print(f"Mean:       {lat_pulldown_weights.mean():.1f} kg  |  std: {lat_pulldown_weights.std():.1f} kg")
+print(
+    f"Min weight: {lat_pulldown_weights.min()} kg  |  max: {lat_pulldown_weights.max()} kg"
+)
+print(
+    f"Mean:       {lat_pulldown_weights.mean():.1f} kg  |  std: {lat_pulldown_weights.std():.1f} kg"
+)
 
 
 # ===========================================================================
@@ -386,7 +390,7 @@ for row in valid_workout_rows:
 
     # volume for this set
     vol = float(row["Weight(kg)"]) * int(row["Reps"])
-    
+
     # accumulate into the week's bucket (defaultdict auto-creates the key)
     weekly_volumes[week] += vol
     weekly_sets[week] += 1
@@ -438,7 +442,9 @@ pre_pt_vol = volumes_arr_np[pre_pt_mask]
 post_pt_vol = volumes_arr_np[post_pt_mask]
 
 print(f"\n--- Pre/post PT comparison ({PT_START}) ---")
-print(f"Pre-PT sets:   {pre_pt_mask.sum():4d}  |  avg volume: {pre_pt_vol.mean():6.1f} kg")
+print(
+    f"Pre-PT sets:   {pre_pt_mask.sum():4d}  |  avg volume: {pre_pt_vol.mean():6.1f} kg"
+)
 print(
     f"Post-PT sets:  {post_pt_mask.sum():4d}  |  avg volume: {post_pt_vol.mean():6.1f} kg"
 )
@@ -540,5 +546,3 @@ sample_volumes = volumes_arr_np[sample_idx]
 print("\n10 randomly sampled sets (seed=42):")
 for ex, vol in zip(sample_exercises, sample_volumes):
     print(f"  {ex:35s} volume: {vol:6.0f} kg")
-
-
