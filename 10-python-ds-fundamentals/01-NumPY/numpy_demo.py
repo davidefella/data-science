@@ -4,34 +4,30 @@ Last update: April 2026 (229 sessions, 3941 logged sets, 86 unique exercises)
 Focus: core NumPy operations on real data, with an eye on ML/AI.
 """
 
-import csv
+import sys
 from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
 
 import numpy as np
 
-# Path to the dataset, derived from this file's location.
-# .parents[2] goes up 2 directories: /01-NumPY → /10-python-ds-fundamentals → /data-science
-# Note: the path is just a pointer to the file — it doesn't know or care
-# about the format. If the file were .xlsx, the path would stay the same.
-WORKOUT_DATA_PATH = (
-    Path(__file__).resolve().parents[2] / "00-datasets" / "workoutExport.csv"
-)
+# Add parent directory to path so we can import the shared data_loader
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from data_loader import load_csv  # noqa: E402  # pylint: disable=import-error,wrong-import-position
+
 
 # 0. LOADING DATA
+# load_csv() is a shared utility (see ../data_loader.py).
+# It reads a CSV from 00-datasets/ and returns a list of dicts (one per row).
+# All values are strings — numeric conversion happens later.
 #
-# Load the entire CSV into memory as a list of dicts (one dict per row).
-# All values are strings.
 # workouts_data_all → [
 #   {"Date": "2025-03-15 ...","Exercise":"Barbell Bench Press","Weight(kg)":"80","Reps": "10",...},
 #   {...},
 #   {...},
 #   ...
 #   {...}]
-with open(WORKOUT_DATA_PATH, encoding="utf-8") as workout_file:
-    # DictReader returns an iterator (one-shot); list() loads all rows into memory
-    workouts_data_all = list(csv.DictReader(workout_file))
+workouts_data_all = load_csv("workoutExport.csv")
 
 print(f"Total row from csv file:        {len(workouts_data_all)}")
 print(f"CSV columns:       {list(workouts_data_all[0].keys())}")
@@ -51,6 +47,9 @@ volumes_list_py = [
     for row in workouts_data_all
     if float(row["Weight(kg)"]) >= 0 and int(row["Reps"]) > 0
 ]
+print("\n" + "=" * 60)
+print("  1. WHY NUMPY — PLAIN PYTHON VS NUMPY")
+print("=" * 60)
 print(f"Sets with weight and reps: {len(volumes_list_py)}")
 print(f"Total volume (list): {sum(volumes_list_py):,.0f} kg")
 
@@ -105,7 +104,10 @@ print(f"Total volume (NumPy): {volumes_arr_np.sum():,.0f} kg")
 # If you mix types, NumPy auto-converts to the most general one
 # (e.g. ints + floats → all floats, numbers + strings → all strings).
 
-print(f"\nweights shape:  {weights.shape}")  # (3628,) — 1D vector
+print("\n" + "=" * 60)
+print("  2. FUNDAMENTAL ATTRIBUTES")
+print("=" * 60)
+print(f"weights shape:  {weights.shape}")  # (3628,) — 1D vector
 print(f"weights dtype:  {weights.dtype}")  # float64
 print(f"weights nbytes: {weights.nbytes} B")  # 3628 * 8 = 29024 bytes
 
@@ -147,6 +149,9 @@ print(f"First 5 rows:\n{X[:5]}")
 # astype() converts the array to a different data type.
 # Here: float64 (8 bytes per number) → float32 (4 bytes per number).
 # Same values, half the memory. Precision loss is negligible for ML.
+print("\n" + "=" * 60)
+print("  3. DTYPE AND MEMORY")
+print("=" * 60)
 X_f32 = X.astype(np.float32)
 
 
@@ -156,7 +161,9 @@ X_f32 = X.astype(np.float32)
 
 # "features" = the characteristics that describe each sample.
 # Same concept as "columns" in a database or "variables" in statistics.
-print("\n--- Statistics per feature (axis=0) ---")
+print("\n" + "=" * 60)
+print("  4. DESCRIPTIVE STATISTICS — AXIS")
+print("=" * 60)
 feature_names = ["weight_kg", "reps", "volume"]
 
 # Axis — the direction along which you aggregate:
@@ -267,7 +274,10 @@ bench_dates = dates_str[bench_mask]
 
 # Question: "How many bench press sets, and at what weights?"
 # .sum() on mask → "How many sets?"
-print(f"\nBarbell Bench Press: {bench_mask.sum()} sets")
+print("\n" + "=" * 60)
+print("  5. INDEXING AND BOOLEAN INDEXING")
+print("=" * 60)
+print(f"Barbell Bench Press: {bench_mask.sum()} sets")
 
 # .min()/.max()  → "What's the weight range?""
 print(f"Min weight: {bb_bench_weights.min()} kg  |  max: {bb_bench_weights.max()} kg")
@@ -329,7 +339,10 @@ X_max = X.max(axis=0)  # → e.g. [140.0, 30, 4200.0] (max of each column)
 #   ... same subtraction for all 3628 rows, no loop needed.
 X_norm = (X - X_min) / (X_max - X_min)
 
-print("\nAfter Min-Max scaling:")
+print("\n" + "=" * 60)
+print("  6. NORMALIZATION — MIN-MAX AND Z-SCORE")
+print("=" * 60)
+print("After Min-Max scaling:")
 print(f"  min per column: {X_norm.min(axis=0)}")
 print(f"  max per column: {X_norm.max(axis=0)}")
 
@@ -408,7 +421,10 @@ vol_array = np.array([weekly_volumes[w] for w in weeks])
 # sets_array → [25, 18, 30, ...]               (number of sets per week)
 sets_array = np.array([weekly_sets[w] for w in weeks])
 
-print(f"\nTotal weeks: {len(weeks)}")
+print("\n" + "=" * 60)
+print("  7. WEEKLY AGGREGATIONS")
+print("=" * 60)
+print(f"Total weeks: {len(weeks)}")
 
 # mean → "What's a typical week?
 print(f"Average weekly volume: {vol_array.mean():,.0f} kg")
@@ -441,7 +457,9 @@ post_pt_mask = dates_str >= PT_START
 pre_pt_vol = volumes_arr_np[pre_pt_mask]
 post_pt_vol = volumes_arr_np[post_pt_mask]
 
-print(f"\n--- Pre/post PT comparison ({PT_START}) ---")
+print("\n" + "=" * 60)
+print(f"  8. PRE/POST PT COMPARISON ({PT_START})")
+print("=" * 60)
 print(
     f"Pre-PT sets:   {pre_pt_mask.sum():4d}  |  avg volume: {pre_pt_vol.mean():6.1f} kg"
 )
@@ -503,7 +521,9 @@ W_intensity = np.array([0.5, 0.3, 0.2])  # importance of [weight, reps, volume]
 # If they don't match → ValueError.
 intensity_scores = X_norm @ W_intensity
 
-print("\nIntensity scores (0–1):")
+print("\n" + "=" * 60)
+print("  9. MATRIX PRODUCT — INTENSITY SCORES")
+print("=" * 60)
 print(f"  mean: {intensity_scores.mean():.3f}")
 print(f"  max:  {intensity_scores.max():.3f} (most intense set)")
 print(f"  min:  {intensity_scores.min():.3f}")
@@ -543,6 +563,8 @@ sample_idx = rng.choice(n, size=10, replace=False)
 sample_exercises = exercise_names[sample_idx]
 sample_volumes = volumes_arr_np[sample_idx]
 
-print("\n10 randomly sampled sets (seed=42):")
+print("\n" + "=" * 60)
+print("  10. RANDOM SEED — REPRODUCIBLE SAMPLING")
+print("=" * 60)
 for ex, vol in zip(sample_exercises, sample_volumes):
     print(f"  {ex:35s} volume: {vol:6.0f} kg")
